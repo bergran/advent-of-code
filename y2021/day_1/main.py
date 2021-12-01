@@ -57,8 +57,10 @@ def depth_measure_with_window(input_: List[int], window: int = 3):
     return count
 
 
-if __name__ == "__main__":
-    inputs_puzzle_1 = [int(i) for i in read_file_inputs(os.path.join(BASE_DIR_INPUTS, "input.txt"))]
+if __name__ == "__main__":  # pragma: no cover
+    inputs_puzzle_1 = [
+        int(i) for i in read_file_inputs(os.path.join(BASE_DIR_INPUTS, "input.txt"))
+    ]
     inputs_puzzle_2 = inputs_puzzle_1
 
     print("solution 1", depth_measure(inputs_puzzle_1))
