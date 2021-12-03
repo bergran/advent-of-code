@@ -1,0 +1,2 @@
+class WrongLengthCodeError(Exception):
+    pass
