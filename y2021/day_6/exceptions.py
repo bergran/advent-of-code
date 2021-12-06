@@ -1,0 +1,2 @@
+class WrongFormatLanternFish(Exception):
+    pass
