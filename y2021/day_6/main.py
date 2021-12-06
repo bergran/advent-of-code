@@ -21,6 +21,17 @@ def transform_line_to_lantern_fish(input_: str) -> List[LanternFish]:
     raise WrongFormatLanternFish()
 
 
+def transform_line_to_list_int(input_: str) -> List[int]:
+    result = pattern.fullmatch(input_)
+
+    if result:
+        return [
+            int(lantern_fish_days)
+            for lantern_fish_days in input_.split(",")
+        ]
+    raise WrongFormatLanternFish()
+
+
 def calculate_new_lantern_fish(lantern_fish: List[LanternFish], to_days: int) -> List[LanternFish]:
     for day in range(to_days):
         new_lantern_fish = []
@@ -35,12 +46,12 @@ def calculate_new_lantern_fish(lantern_fish: List[LanternFish], to_days: int) ->
 
 
 def calculate_new_lantern_fish_optimized(
-    lantern_fish: List[LanternFish], to_days: int
+    lantern_fish: List[int], to_days: int
 ) -> int:
     lantern_fish_dict = {}
     for lantern_fish in lantern_fish:
-        lantern_fish_dict[lantern_fish.days_to_reproduce] = (
-            lantern_fish_dict.get(lantern_fish.days_to_reproduce, 0) + 1
+        lantern_fish_dict[lantern_fish] = (
+            lantern_fish_dict.get(lantern_fish, 0) + 1
         )
 
     for day in range(to_days):
@@ -61,7 +72,7 @@ def puzzle_1(input_: str, to_days: int) -> int:
 
 def puzzle_2(input_: str, to_days: int) -> int:
     return calculate_new_lantern_fish_optimized(
-        transform_line_to_lantern_fish(input_), to_days
+        transform_line_to_list_int(input_), to_days
     )
 
 
