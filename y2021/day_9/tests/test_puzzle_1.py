@@ -17,16 +17,7 @@ from y2021.day_9.main import puzzle_1, Point, calculate_top_bottom_left_right
                 "9899965678",
             ],
             15,
-            id="Given this input get 26 recognized digits",
-        ),
-        pytest.param(
-            [
-                "99999999999",
-                "99999999999",
-                "99999999999",
-            ],
-            0,
-            id="Given this input get 26 recognized digits",
+            id="example",
         ),
         pytest.param(
             [
@@ -37,18 +28,18 @@ from y2021.day_9.main import puzzle_1, Point, calculate_top_bottom_left_right
                 "00000000000000",
             ],
             0,
-            id="Given this input get 26 recognized digits",
+            id="plane",
         ),
         pytest.param(
             [
                 "00000000000000",
                 "00000010000000",
                 "00000201000000",
-                "00000020000006",
-                "00000000000030",
+                "00000020000000",
+                "00000000000000",
             ],
-            4,
-            id="Given this input get 26 recognized digits",
+            1,
+            id="center",
         ),
         pytest.param(
             [
@@ -59,7 +50,7 @@ from y2021.day_9.main import puzzle_1, Point, calculate_top_bottom_left_right
                 "00000000000020",
             ],
             2,
-            id="Given this input get 26 recognized digits",
+            id="top-left corner and bot left-corner",
         ),
         pytest.param(
             [
@@ -69,8 +60,8 @@ from y2021.day_9.main import puzzle_1, Point, calculate_top_bottom_left_right
                 "20000000000000",
                 "06000000000000",
             ],
-            3,
-            id="Given this input get 26 recognized digits",
+            2,
+            id="top-left corner and bot left-corner",
         ),
     ],
 )
@@ -122,7 +113,7 @@ def test_point_is_lower_and_adjacent(
     expected_is_lower_point: bool,
     expected_adjacent_point: int,
 ):
-    assert point.is_low_point(*adjacent) == expected_is_lower_point
+    assert point.is_low_point() == expected_is_lower_point
     assert point.adjacent == expected_adjacent_point
 
 

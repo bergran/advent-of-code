@@ -1,5 +1,6 @@
 import os
-from typing import List, Optional, Tuple
+from functools import reduce
+from typing import List, Tuple
 
 from src.utils import read_file_inputs
 
@@ -18,7 +19,7 @@ class Point:
 
     def __init__(
         self,
-        center,
+        center: int,
         coords: Tuple[int, int],
         left=None,
         right=None,
@@ -41,30 +42,49 @@ class Point:
     def is_low_point(self):
         return self.center < self.adjacent
 
+    def get_basins(self, matrix: List[List[int]], num: int = None):
+        num = self.center + 1 if num is None else num
+
+        if num > 8:
+            return set()
+
+        basins = {(self.x, self.y)}
+        for y in (-1, 0, 1):
+            for x in (-1, 0, 1):
+                new_x = self.x + x
+                new_y = self.y + y
+                if (
+                    abs(x) != abs(y)
+                    and 0 <= new_y < len(matrix)
+                    and 0 <= new_x < len(matrix[new_y])
+                    and matrix[new_y][new_x] == num
+                ):
+                    print("num", self.center, num, basins)
+                    point = Point(
+                        matrix[new_y][new_x],
+                        (new_x, new_y),
+                        matrix[new_y][new_x - 1] if new_x > 0 else None,
+                        matrix[new_y][new_x + 1]
+                        if new_x < len(matrix[new_y]) - 1
+                        else None,
+                        matrix[new_y - 1][new_x] if new_y > 0 else None,
+                        matrix[new_y + 1][new_x] if new_y < len(matrix) - 1 else None,
+                    )
+                    basins |= point.get_basins(matrix, num + 1)
+
+        return basins
+
 
 def puzzle_1(input_: List[str]) -> int:
     signal_output_lines = transform_input_to_numbers(input_)
-    points = []
-    for y, line in enumerate(signal_output_lines):
-        for x, code in enumerate(line):
-            left, right, top, bottom = calculate_top_bottom_left_right(
-                x, y, signal_output_lines
-            )
+    points = get_low_points(signal_output_lines)
 
-            current_point = Point(code, (x, y), left, right, top, bottom)
-
-            if current_point.is_low_point():
-                points.append(current_point)
-
-            print(f"is_lower: {current_point.is_low_point()} center: {current_point.center} top: {top} bottom: {bottom} left: {left} right: {right}")
-
-    for point in points:
-        print(point)
-
-    return sum([point.adjacent for point in points])
+    return sum([point.center + 1 for point in points])
 
 
-def calculate_top_bottom_left_right(x: int, y: int, signal_output_lines: List[List[int]]):
+def calculate_top_bottom_left_right(
+    x: int, y: int, signal_output_lines: List[List[int]]
+):
     line = signal_output_lines[y]
 
     if y == 0:
@@ -92,8 +112,44 @@ def calculate_top_bottom_left_right(x: int, y: int, signal_output_lines: List[Li
 
 def puzzle_2(input_: List[str]) -> int:
     signal_output_lines = transform_input_to_numbers(input_)
+    basins = sorted(get_low_points_basin(signal_output_lines))
 
-    return 0
+    # print(basins)
+    return reduce(lambda state, value: state * value, basins[-3:], 1)
+
+
+def get_low_points(signal_output_lines):
+    points = []
+    for y, line in enumerate(signal_output_lines):
+        for x, code in enumerate(line):
+            left, right, top, bottom = calculate_top_bottom_left_right(
+                x, y, signal_output_lines
+            )
+
+            current_point = Point(code, (x, y), left, right, top, bottom)
+
+            if current_point.is_low_point():
+                points.append(current_point)
+
+    return points
+
+
+def get_low_points_basin(signal_output_lines):
+    basin_points = []
+    for y, line in enumerate(signal_output_lines):
+        for x, code in enumerate(line):
+            left, right, top, bottom = calculate_top_bottom_left_right(
+                x, y, signal_output_lines
+            )
+
+            current_point = Point(code, (x, y), left, right, top, bottom)
+
+            if current_point.is_low_point():
+                print(current_point.center, "*"*9)
+                basins = current_point.get_basins(signal_output_lines)
+                basin_points.append(len(basins))
+                print("pepe", current_point.center, basins)
+    return basin_points
 
 
 if __name__ == "__main__":  # pragma: no cover
