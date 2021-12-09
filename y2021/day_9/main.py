@@ -27,7 +27,7 @@ class Point:
     ):
         self.center = center
         self.adjacent = self._get_adjacent(left, right, top, bottom)
-        self.is_low_point(left, right, top, bottom)
+        self.is_low_point()
         self.x = coords[0]
         self.y = coords[1]
 
@@ -38,8 +38,8 @@ class Point:
     def __repr__(self):
         return f"<Point: center: {self.center} adjacent: {self.adjacent} x: {self.x} y: {self.y}>"
 
-    def is_low_point(self, left, right, top, bottom):
-        return self.center < self._get_adjacent(left, right, top, bottom)
+    def is_low_point(self):
+        return self.center < self.adjacent
 
 
 def puzzle_1(input_: List[str]) -> int:
@@ -53,10 +53,10 @@ def puzzle_1(input_: List[str]) -> int:
 
             current_point = Point(code, (x, y), left, right, top, bottom)
 
-            if current_point.is_low_point(left, right, top, bottom):
+            if current_point.is_low_point():
                 points.append(current_point)
 
-            print(f"is_lower: {current_point.is_low_point(left, right, top, bottom)} center: {current_point.center} top: {top} bottom: {bottom} left: {left} right: {right}")
+            print(f"is_lower: {current_point.is_low_point()} center: {current_point.center} top: {top} bottom: {bottom} left: {left} right: {right}")
 
     for point in points:
         print(point)
